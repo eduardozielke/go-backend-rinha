@@ -1,0 +1,12 @@
+version: '3'
+
+services:
+  zielke_mongodb:
+    image: mongo
+    container_name: zielke-mongodb
+    environment:
+      MONGO_INITDB_DATABASE: zielke_mongodb
+      MONGO_INITDB_ROOT_USERNAME: zielke
+      MONGO_INITDB_ROOT_PASSWORD: 123
+    ports:
+      - "1211:27017"

@@ -1,0 +1,10 @@
+server:
+  port: 8080
+
+mongodb:
+  dbname: "zielke-mongodb"
+  dbcollections:
+    pessoas: "pessoas"
+  dbuser: "zielke"
+  dbpassword: "123"
+  dbhost: "localhost:1211"
