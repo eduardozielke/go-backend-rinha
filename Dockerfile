@@ -19,8 +19,10 @@ RUN apk --no-cache add ca-certificates
 
 WORKDIR /app/
 
+# ENV DBHOST=
+
 COPY --from=builder /app/main .
-COPY --from=builder /app/.env .
+COPY config.yml /app/
 
 EXPOSE 8080
 

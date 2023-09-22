@@ -7,4 +7,4 @@ mongodb:
     pessoas: "pessoas"
   dbuser: "zielke"
   dbpassword: "123"
-  dbhost: "localhost:1211"
+  dbhost: {DBHOST: "localhost:1211"}

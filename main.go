@@ -38,8 +38,8 @@ func readConfig() *viper.Viper {
 	viper.SetConfigName("config")
 	viper.SetConfigType("yaml")
 	viper.AddConfigPath(".")
-	err := viper.ReadInConfig() 
-	if err != nil {             
+	err := viper.ReadInConfig()
+	if err != nil {
 		log.Fatal(fmt.Errorf("fatal error config file: %w", err))
 	}
 	return viper.GetViper()
@@ -50,6 +50,9 @@ func setupMongoDBClient(ctx context.Context, cfg *viper.Viper) *mongo.Client {
 		cfg.GetString("mongodb.dbuser"),
 		cfg.GetString("mongodb.dbpassword"),
 		cfg.GetString("mongodb.dbhost"))
+
+	log.Default().Println(uri)
+	log.Default().Println(cfg.GetString("mongodb.dbhost"))
 
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI(uri))
 	if err != nil {
