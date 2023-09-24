@@ -18,10 +18,9 @@ type PessoasHandler struct {
 	mongoDBStore datastore.Pessoas
 }
 
-func NewPessoasHandler(ctx context.Context, cfg *viper.Viper, mongoDBStore datastore.Pessoas) *PessoasHandler {
+func NewPessoasHandler(ctx context.Context, mongoDBStore datastore.Pessoas) *PessoasHandler {
 	return &PessoasHandler{
 		ctx:          ctx,
-		cfg:          cfg,
 		mongoDBStore: mongoDBStore,
 	}
 }

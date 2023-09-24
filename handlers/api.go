@@ -5,12 +5,11 @@ import (
 	"go-backend-rinha/datastore"
 
 	"github.com/gin-gonic/gin"
-	"github.com/spf13/viper"
 )
 
 
-func Setup(ctx context.Context, cfg *viper.Viper, router *gin.Engine, mongoPessoaClient datastore.Pessoas) *gin.Engine {
-	pessoaHandler := NewPessoasHandler(ctx, cfg, mongoPessoaClient)
+func Setup(ctx context.Context, router *gin.Engine, mongoPessoaClient datastore.Pessoas) *gin.Engine {
+	pessoaHandler := NewPessoasHandler(ctx, mongoPessoaClient)
 
 
 	router.POST("/pessoa", pessoaHandler.NovaPessoa)

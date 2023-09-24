@@ -5,54 +5,42 @@ import (
 	"fmt"
 	"go-backend-rinha/datastore"
 	"go-backend-rinha/handlers"
+	Util "go-backend-rinha/util"
 	"log"
 
 	"github.com/gin-gonic/gin"
-	"github.com/spf13/viper"
+	"github.com/joho/godotenv"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
 func main() {
+	godotenv.Load()
 	ctx := context.Background()
-	cfg := readConfig()
 
-	mongoDBClient := setupMongoDBClient(ctx, cfg)
+	mongoDBClient := setupMongoDBClient(ctx)
 
-	mongoPessoaClient := datastore.NewPessoaClient(mongoDBClient, cfg)
+	mongoPessoaClient := datastore.NewPessoaClient(mongoDBClient)
 	mongoPessoaClient.InitPessoas(ctx)
 
 	router := gin.Default()
 
-	if err := handlers.Setup(ctx, cfg, router, mongoPessoaClient).Run(":8080"); err != nil {
+	SERVER_PORT := Util.GetEnvVariable("SERVER_PORT")
+
+	if err := handlers.Setup(ctx, router, mongoPessoaClient).Run(":" + SERVER_PORT); err != nil {
 		return
 	}
 
-	// r := setupRouter()
-	// r.Run(":8080")
 }
 
-func readConfig() *viper.Viper {
-	viper.AutomaticEnv()
-	viper.SetConfigName("config")
-	viper.SetConfigType("yaml")
-	viper.AddConfigPath(".")
-	err := viper.ReadInConfig()
-	if err != nil {
-		log.Fatal(fmt.Errorf("fatal error config file: %w", err))
-	}
-	return viper.GetViper()
-}
-
-func setupMongoDBClient(ctx context.Context, cfg *viper.Viper) *mongo.Client {
+func setupMongoDBClient(ctx context.Context) *mongo.Client {
 	uri := fmt.Sprintf("mongodb://%s:%s@%s/test?authSource=admin",
-		cfg.GetString("mongodb.dbuser"),
-		cfg.GetString("mongodb.dbpassword"),
-		cfg.GetString("mongodb.dbhost"))
+		Util.GetEnvVariable("DB_USER"),
+		Util.GetEnvVariable("DB_PWD"),
+		Util.GetEnvVariable("DB_HOST"))
 
 	log.Default().Println(uri)
-	log.Default().Println(cfg.GetString("mongodb.dbhost"))
 
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI(uri))
 	if err != nil {

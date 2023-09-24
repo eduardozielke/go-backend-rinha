@@ -1,10 +1,10 @@
 server:
-  port: 8080
+  port: {SERVER_PORT: 8080}
 
 mongodb:
-  dbname: "zielke-mongodb"
+  dbname: {DBNAME: "zielke-mongodb"}
   dbcollections:
-    pessoas: "pessoas"
-  dbuser: "zielke"
-  dbpassword: "123"
-  dbhost: {DBHOST: "localhost:1211"}
+    pessoas: {DBCOLLECTION: "pessoas"}
+  dbuser: {DBUSER: "zielke"}
+  dbpassword: {DBPWD: "123"}
+  dbhost: ${DBHOST}

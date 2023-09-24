@@ -5,9 +5,9 @@ import (
 	"errors"
 	"fmt"
 	"go-backend-rinha/model"
+	Util "go-backend-rinha/util"
 	"log"
 
-	"github.com/spf13/viper"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -23,22 +23,20 @@ type Pessoas interface {
 
 type PessoaClient struct {
 	client *mongo.Client
-	cfg    *viper.Viper
 	col    *mongo.Collection
 }
 
-func getCollection(cfg *viper.Viper, client *mongo.Client, colKey string) *mongo.Collection {
-	db := cfg.GetString("mongodb.dbname")
-	col := cfg.GetString(colKey)
+func getCollection(client *mongo.Client, colKey string) *mongo.Collection {
+	db := Util.GetEnvVariable("DB_NAME")
+	col := Util.GetEnvVariable(colKey)
 
 	return client.Database(db).Collection(col)
 }
 
-func NewPessoaClient(client *mongo.Client, cfg *viper.Viper) *PessoaClient {
+func NewPessoaClient(client *mongo.Client) *PessoaClient {
 	return &PessoaClient{
 		client: client,
-		cfg:    cfg,
-		col:    getCollection(cfg, client, "mongodb.dbcollections.pessoas"),
+		col:    getCollection(client, "DB_COLLECTION"),
 	}
 }
 
@@ -73,7 +71,6 @@ func (c *PessoaClient) BuscaPorId(ctx context.Context, id string) (model.Pessoa,
 	return pessoa, nil
 }
 
-
 func (c *PessoaClient) BuscaPessoasNomeSeguro(ctx context.Context, nomePessoaOuSeguro string) ([]model.Pessoa, error) {
 	pessoas := make([]model.Pessoa, 0)
 
@@ -103,6 +100,9 @@ func (c *PessoaClient) InitPessoas(ctx context.Context) {
 }
 
 func setupIndexes(ctx context.Context, collection *mongo.Collection, key string) {
+	log.Println("collection", collection)
+	log.Println("key", key)
+
 	idxOpt := &options.IndexOptions{}
 	idxOpt.SetUnique(true)
 	mod := mongo.IndexModel{
