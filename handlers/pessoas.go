@@ -10,6 +10,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 	"github.com/spf13/viper"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 type PessoasHandler struct {
@@ -25,12 +26,14 @@ func NewPessoasHandler(ctx context.Context, mongoDBStore datastore.Pessoas) *Pes
 	}
 }
 
+const ERROR_DUPLICATED_KEY = 11000
+
 func (handler *PessoasHandler) NovaPessoa(ctx *gin.Context) {
 	var pessoa *model.Pessoa
 
 	if err := ctx.ShouldBindJSON(&pessoa); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
-			"inputInvalido": err.Error(),
+			"error": err.Error(),
 		})
 		return
 	}
@@ -43,12 +46,24 @@ func (handler *PessoasHandler) NovaPessoa(ctx *gin.Context) {
 			fmt.Println(e)
 		}
 		ctx.JSON(http.StatusBadRequest, gin.H{
-			"inputInvalido": validationErr.Error(),
+			"error": validationErr.Error(),
 		})
 		return
 	}
 
 	if err := handler.mongoDBStore.AddPessoa(handler.ctx, pessoa); err != nil {
+
+		if writeException, ok := err.(mongo.WriteException); ok {
+			for _, writeError := range writeException.WriteErrors {
+				if writeError.Code == ERROR_DUPLICATED_KEY {
+					ctx.JSON(http.StatusBadRequest, gin.H{
+						"error": "Chave duplicada: " + writeError.Message,
+					})
+					return
+				}
+			}
+		}
+
 		ctx.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
 		})
@@ -75,6 +90,13 @@ func (handler *PessoasHandler) BuscaPorId(ctx *gin.Context) {
 
 func (handler *PessoasHandler) BuscaPessoasNomeSeguro(ctx *gin.Context) {
 	t := ctx.Query("t")
+
+	if t == "" {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"error": "parametro t é obrigatório",
+		})
+		return
+	}
 
 	pessoas, err := handler.mongoDBStore.BuscaPessoasNomeSeguro(handler.ctx, t)
 

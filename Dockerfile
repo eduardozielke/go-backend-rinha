@@ -30,7 +30,6 @@ WORKDIR /app/
 # ENV DB_HOST=
 
 COPY --from=builder /app/main .
-COPY config.yml /app/
 COPY .env /app/
 
 # EXPOSE 8080

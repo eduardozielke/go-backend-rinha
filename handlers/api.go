@@ -15,6 +15,7 @@ func Setup(ctx context.Context, router *gin.Engine, mongoPessoaClient datastore.
 	router.POST("/pessoa", pessoaHandler.NovaPessoa)
 	router.GET("/pessoa/:id", pessoaHandler.BuscaPorId)
 	router.GET("/pessoa", pessoaHandler.BuscaPessoasNomeSeguro)
+	
 	router.GET("/pessoas", pessoaHandler.ListPessoas)
 
 	

@@ -81,7 +81,9 @@ func (c *PessoaClient) BuscaPessoasNomeSeguro(ctx context.Context, nomePessoaOuS
 		},
 	}
 
-	cur, err := c.col.Find(ctx, filter)
+	opts := options.Find().SetLimit(50)
+
+	cur, err := c.col.Find(ctx, filter, opts)
 	if err != nil {
 		log.Print(fmt.Errorf("Erro ao buscar pessoas [%s]: %w", nomePessoaOuSeguro, err))
 		return nil, err
@@ -97,11 +99,10 @@ func (c *PessoaClient) BuscaPessoasNomeSeguro(ctx context.Context, nomePessoaOuS
 
 func (c *PessoaClient) InitPessoas(ctx context.Context) {
 	setupIndexes(ctx, c.col, "nome")
+	setupIndexes(ctx, c.col, "cpf_cnpj")
 }
 
 func setupIndexes(ctx context.Context, collection *mongo.Collection, key string) {
-	log.Println("collection", collection)
-	log.Println("key", key)
 
 	idxOpt := &options.IndexOptions{}
 	idxOpt.SetUnique(true)
