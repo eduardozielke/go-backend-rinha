@@ -18,7 +18,7 @@ services:
           memory: '1.5GB'
   api1:
     # API - Instância 01
-    image: rinha-backend-image
+    image: api-rinha-zielke  
     container_name: api1
     hostname: api1
     depends_on:
@@ -40,7 +40,7 @@ services:
 
   api2:
     # API - Instância 01
-    image: rinha-backend-image
+    image: api-rinha-zielke    
     container_name: api2
     hostname: api2
     depends_on:

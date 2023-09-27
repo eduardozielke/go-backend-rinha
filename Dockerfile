@@ -27,12 +27,9 @@ RUN apk --no-cache add ca-certificates
 
 WORKDIR /app/
 
-# ENV DB_HOST=
-
 COPY --from=builder /app/main .
 COPY .env /app/
 
-# EXPOSE 8080
 EXPOSE ${SERVER_PORT}
 
 ENV DB_HOST=${DB_HOST}
