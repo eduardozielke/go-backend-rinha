@@ -8,6 +8,7 @@ import (
 	Util "go-backend-rinha/util"
 	"log"
 
+	"github.com/google/uuid"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -41,7 +42,7 @@ func NewPessoaClient(client *mongo.Client) *PessoaClient {
 }
 
 func (c *PessoaClient) AddPessoa(ctx context.Context, pessoa *model.Pessoa) error {
-	pessoa.ID = primitive.NewObjectID()
+	pessoa.ID = uuid.New()
 	_, err := c.col.InsertOne(ctx, pessoa)
 	if err != nil {
 		log.Print(fmt.Errorf("Não foi possivel adicionar um nova pessoa: %w", err))

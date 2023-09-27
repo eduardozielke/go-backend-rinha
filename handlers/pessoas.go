@@ -9,13 +9,11 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
-	"github.com/spf13/viper"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
 type PessoasHandler struct {
 	ctx          context.Context
-	cfg          *viper.Viper
 	mongoDBStore datastore.Pessoas
 }
 
