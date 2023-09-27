@@ -10,7 +10,6 @@ import (
 
 	"github.com/google/uuid"
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -53,8 +52,8 @@ func (c *PessoaClient) AddPessoa(ctx context.Context, pessoa *model.Pessoa) erro
 
 func (c *PessoaClient) BuscaPorId(ctx context.Context, id string) (model.Pessoa, error) {
 	var pessoa model.Pessoa
-	objID, _ := primitive.ObjectIDFromHex(id)
-	res := c.col.FindOne(ctx, bson.M{"_id": objID})
+	uuid, _ := uuid.Parse(id)
+	res := c.col.FindOne(ctx, bson.M{"_id": uuid})
 
 	if res.Err() != nil {
 		if errors.Is(res.Err(), mongo.ErrNoDocuments) {
