@@ -15,7 +15,7 @@ services:
       resources:
         limits:
           cpus: '0.75'
-          memory: '1.5GB'
+          memory: '1.0GB'
   api1:
     # API - Instância 01
     image: eduardozielke/rinha-backend  
@@ -36,7 +36,7 @@ services:
       resources:
         limits:
           cpus: '0.25'
-          memory: '0.5GB'
+          memory: '0.85GB'
 
   api2:
     # API - Instância 01
@@ -58,7 +58,7 @@ services:
       resources:
         limits:
           cpus: '0.25'
-          memory: '0.5GB'
+          memory: '0.85GB'
 
   nginx:
     # Load Balancer
