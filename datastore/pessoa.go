@@ -10,6 +10,7 @@ import (
 
 	"github.com/google/uuid"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -76,8 +77,8 @@ func (c *PessoaClient) BuscaPessoasNomeSeguro(ctx context.Context, nomePessoaOuS
 
 	filter := bson.M{
 		"$or": []bson.M{
-			{"nome": nomePessoaOuSeguro},
-			{"seguros": nomePessoaOuSeguro},
+			{"nome": bson.M{"$regex": primitive.Regex{Pattern: nomePessoaOuSeguro, Options: "i"}},},
+			{"seguros": bson.M{"$regex": primitive.Regex{Pattern: nomePessoaOuSeguro, Options: "i"}}},
 		},
 	}
 
